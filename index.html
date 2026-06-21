@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Euler-X Pro | The Ultimate Professional Calculator</title>
+    <!-- Tailwind CSS v4 via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Lucide Icons for premium visual design -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts for premium typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #030712;
+            overflow-x: hidden;
+        }
+        .font-mono-custom {
+            font-family: 'Space Grotesk', monospace;
+        }
+        /* Custom animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(1deg); }
+        }
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.05); }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-6px); }
+            20%, 40%, 60%, 80% { transform: translateX(6px); }
+        }
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        .animate-pulse-slow {
+            animation: pulse-slow 8s ease-in-out infinite;
+        }
+        .animate-shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        .cursor-blink {
+            animation: blink 1s step-end infinite;
+        }
+        /* Scrollbar customization */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.3);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(99, 102, 241, 0.5);
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-100 flex flex-col justify-between items-center relative p-4 md:p-8 bg-radial-[circle_at_center,_var(--tw-gradient-stops)] from-slate-950 via-slate-950 to-black select-none">
+
+    <!-- Decorative Animated Background Lights -->
+    <div class="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-72 h-72 md:w-96 md:h-96 rounded-full bg-violet-600/10 blur-[80px] md:blur-[120px] pointer-events-none animate-pulse-slow"></div>
+    <div class="absolute bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-80 h-80 md:w-128 md:h-128 rounded-full bg-indigo-600/10 blur-[90px] md:blur-[140px] pointer-events-none animate-pulse-slow" style="animation-delay: -3s;"></div>
+
+    <!-- Header / Brand -->
+    <header class="w-full max-w-lg flex items-center justify-between z-10 mb-2">
+        <div class="flex items-center gap-2.5">
+            <div class="bg-gradient-to-tr from-violet-600 to-indigo-500 p-2 rounded-xl shadow-lg shadow-indigo-500/20">
+                <i data-lucide="binary" class="w-6 h-6 text-white"></i>
+            </div>
+            <div>
+                <h1 class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">EULER-X <span class="text-indigo-400 text-xs font-bold px-1.5 py-0.5 rounded border border-indigo-500/30 bg-indigo-500/10 uppercase tracking-widest ml-1">Pro</span></h1>
+                <p class="text-[10px] text-slate-400 font-mono-custom tracking-wider">PRECISE • COMPUTATIONAL • SUPREME</p>
+            </div>
+        </div>
+        
+        <!-- Controls & Sound Toggle -->
+        <div class="flex items-center gap-2">
+            <button id="soundToggleBtn" onclick="toggleSound()" class="p-2 rounded-xl bg-slate-900/60 border border-slate-800 hover:bg-slate-800/80 transition text-slate-400 hover:text-indigo-400 flex items-center gap-1.5 text-xs font-medium" title="Toggle Sound Effects">
+                <i data-lucide="volume-2" id="soundIcon" class="w-4 h-4 text-indigo-400"></i>
+                <span class="hidden sm:inline" id="soundStatus">SFX On</span>
+            </button>
+            <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/60 border border-slate-800">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="text-[11px] font-medium text-slate-400 tracking-wider font-mono-custom">SYSTEM ONLINE</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container (Calculator & Side Widgets) -->
+    <main class="w-full max-w-md flex flex-col items-center gap-6 z-10 py-4 my-auto">
+        
+        <!-- Free Trial Interactive Prompt Banner -->
+        <div class="w-full bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent border border-amber-500/25 rounded-2xl p-3 flex items-center justify-between gap-3 text-xs shadow-lg backdrop-blur-md">
+            <div class="flex items-center gap-2">
+                <div class="bg-amber-500/20 p-1.5 rounded-lg text-amber-400 animate-bounce">
+                    <i data-lucide="zap" class="w-4 h-4"></i>
+                </div>
+                <div>
+                    <p class="font-bold text-amber-300">Stuck in the paywall?</p>
+                    <p class="text-slate-400 text-[11px]">Activate our hyper-speed 3-Second Free Trial!</p>
+                </div>
+            </div>
+            <button id="trialBtn" onclick="activateFreeTrial()" class="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold tracking-wide shadow-md transition duration-200 cursor-pointer active:scale-95 text-[11px]">
+                Start Trial
+            </button>
+        </div>
+
+        <!-- The Calculator Container -->
+        <div id="calculatorCard" class="w-full bg-slate-900/75 backdrop-blur-xl border border-slate-800/80 rounded-3xl p-5 shadow-2xl transition-all duration-300 relative overflow-hidden group">
+            <!-- Sleek highlight border -->
+            <div class="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-indigo-500/40 to-transparent"></div>
+            
+            <!-- Calculator Display -->
+            <div class="bg-slate-950/80 border border-slate-800/80 rounded-2xl p-4 mb-4 flex flex-col items-end justify-between min-h-[110px] shadow-inner relative overflow-hidden font-mono-custom">
+                <!-- Watermark -->
+                <span class="absolute top-2 left-3 text-[10px] text-slate-600 tracking-widest font-semibold pointer-events-none">EULER COMPUTATION ENGINE v4.8</span>
+                
+                <!-- Formula History -->
+                <div id="calcHistory" class="text-slate-500 text-sm h-6 overflow-hidden text-right w-full tracking-wide pr-1"></div>
+                
+                <!-- Main Display Input -->
+                <div class="flex items-center justify-end w-full max-w-full overflow-x-auto whitespace-nowrap py-1">
+                    <span id="calcDisplay" class="text-3xl md:text-4xl font-bold text-white tracking-tight">0</span>
+                    <span class="w-1 h-8 bg-indigo-400 ml-1 cursor-blink rounded-full"></span>
+                </div>
+            </div>
+
+            <!-- Calculator Keypad Grid -->
+            <div class="grid grid-cols-4 gap-2.5">
+                <!-- Row 1 -->
+                <button onclick="pressClear()" class="col-span-2 py-4 rounded-xl bg-slate-800/40 border border-slate-800 hover:bg-slate-800/80 text-rose-400 font-bold transition-all duration-150 transform active:scale-95 flex items-center justify-center gap-1">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i> AC
+                </button>
+                <button onclick="pressBackspace()" class="py-4 rounded-xl bg-slate-800/40 border border-slate-800 hover:bg-slate-800/80 text-slate-300 font-bold transition-all duration-150 transform active:scale-95 flex items-center justify-center">
+                    <i data-lucide="backspace" class="w-5 h-5"></i>
+                </button>
+                <button onclick="pressOperator('/')" class="py-4 rounded-xl bg-indigo-600/10 border border-indigo-500/20 hover:bg-indigo-600/20 text-indigo-400 font-extrabold transition-all duration-150 transform active:scale-95 text-xl flex items-center justify-center">
+                    ÷
+                </button>
+
+                <!-- Row 2 -->
+                <button onclick="pressNumber('7')" class="py-4 rounded-xl bg-slate-800/60 border border-slate-800/50 hover:bg-slate-800 hover:border-slate-700 text-white font-semibold transition-all duration-150 transform active:scale-95 text-lg">
+                    7
+                </button>
+                <button onclick="pressNumber('8')" class="py-4 rounded-xl bg-slate-800/60 border border-slate-800/50 hover:bg-slate-800 hover:border-slate-700 text-white font-semibold transition-all duration-150 transform active:scale-95 text-lg">
+                    8
+                </button>
+                <button onclick="pressNumber('9')" class="py-4 rounded-xl bg-slate-800/60 border border-slate-800/50 hover:bg-slate-800 hover:border-slate-700 text-white font-semibold transition-all duration-150 transform active:scale-95 text-lg">
+                    9
+                </button>
+                <button onclick="pressOperator('*')" class="py-4 rounded-xl bg-indigo-600/10 border border-indigo-500/20 hover:bg-indigo-600/20 text-indigo-400 font-extrabold transition-all duration-150 transform active:scale-95 text-xl flex items-center justify-center">
+                    ×
+                </button>
+
+                <!-- Row 3 -->
+                <button onclick="pressNumber('4')" class="py-4 rounded-xl bg-slate-800/60 border border-slate-800/50 hover:bg-slate-800 hover:border-slate-700 text-white font-semibold transition-all duration-150 transform active:scale-95 text-lg">
+                    4
+                </button>
+                <button onclick="pressNumber('5')" class="py-4 rounded-xl bg-slate-800/60 border border-slate-800/50 hover:bg-slate-800 hover:border-slate-700 text-white font-semibold transition-all duration-150 transform active:scale-95 text-lg">
+                    5
+                </button>
+                <button onclick="pressNumber('6')" class="py-4 rounded-xl bg-slate-800/60 border border-slate-800/50 hover:bg-slate-800 hover:border-slate-700 text-white font-semibold transition-all duration-150 transform active:scale-95 text-lg">
+                    6
+                </button>
+                <button onclick="pressOperator('-')" class="py-4 rounded-xl bg-indigo-600/10 border border-indigo-500/20 hover:bg-indigo-600/20 text-indigo-400 font-extrabold transition-all duration-150 transform active:scale-95 text-xl flex items-center justify-center">
+                    -
+                </button>
+
+                <!-- Row 4 -->
+                <button onclick="pressNumber('1')" class="py-4 rounded-xl bg-slate-800/60 border border-slate-800/50 hover:bg-slate-800 hover:border-slate-700 text-white font-semibold transition-all duration-150 transform active:scale-95 text-lg">
+                    1
+                </button>
+                <button onclick="pressNumber('2')" class="py-4 rounded-xl bg-slate-800/60 border border-slate-800/50 hover:bg-slate-800 hover:border-slate-700 text-white font-semibold transition-all duration-150 transform active:scale-95 text-lg">
+                    2
+                </button>
+                <button onclick="pressNumber('3')" class="py-4 rounded-xl bg-slate-800/60 border border-slate-800/50 hover:bg-slate-800 hover:border-slate-700 text-white font-semibold transition-all duration-150 transform active:scale-95 text-lg">
+                    3
+                </button>
+                <button onclick="pressOperator('+')" class="py-4 rounded-xl bg-indigo-600/10 border border-indigo-500/20 hover:bg-indigo-600/20 text-indigo-400 font-extrabold transition-all duration-150 transform active:scale-95 text-xl flex items-center justify-center">
+                    +
+                </button>
+
+                <!-- Row 5 -->
+                <button onclick="pressNumber('0')" class="col-span-2 py-4 rounded-xl bg-slate-800/60 border border-slate-800/50 hover:bg-slate-800 hover:border-slate-700 text-white font-semibold transition-all duration-150 transform active:scale-95 text-lg">
+                    0
+                </button>
+                <button onclick="pressDecimal()" class="py-4 rounded-xl bg-slate-800/60 border border-slate-800/50 hover:bg-slate-800 hover:border-slate-700 text-white font-semibold transition-all duration-150 transform active:scale-95 text-lg">
+                    .
+                </button>
+                <!-- EQUALS BUTTON: The Troll Gateway -->
+                <button onclick="pressEquals()" class="py-4 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white font-black transition-all duration-150 transform active:scale-95 text-xl flex items-center justify-center shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30">
+                    =
+                </button>
+            </div>
+            
+            <!-- Sleek Footer on Calculator -->
+            <div class="mt-4 pt-4 border-t border-slate-800/80 flex justify-between items-center text-[10px] text-slate-500 font-mono-custom">
+                <span>SECURE SSL CALCULATION</span>
+                <span>PRO MODEL v4.0</span>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Funny Rotating Ad Banner at bottom -->
+    <footer class="w-full max-w-lg z-10 mt-2">
+        <div class="bg-slate-950/70 border border-slate-900 rounded-xl p-3 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left shadow-lg overflow-hidden relative min-h-[60px]">
+            <div class="absolute top-1 left-2 text-[8px] uppercase tracking-wider text-indigo-400 font-semibold font-mono-custom">Sponsor Ad</div>
+            <div class="flex items-center gap-3 mt-1.5 sm:mt-0">
+                <div class="hidden sm:flex bg-indigo-500/10 p-2 rounded-lg text-indigo-400">
+                    <i data-lucide="sparkles" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <p id="adTitle" class="text-xs font-bold text-slate-200 transition-all duration-300">Hot single equations in your area want to solve!</p>
+                    <p id="adDesc" class="text-[10px] text-slate-400 transition-all duration-300">No strings attached. Just pure integration. X is waiting for you.</p>
+                </div>
+            </div>
+            <button id="adBtn" onclick="triggerAdTroll()" class="whitespace-nowrap px-3 py-1.5 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 text-[10px] font-bold tracking-wide cursor-pointer active:scale-95 transition">
+                Solve X Now
+            </button>
+        </div>
+    </footer>
+
+    <!-- ================= MODAL OVERLAY ================= -->
+    <div id="modalOverlay" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+        
+        <!-- 1. SUBSCRIPTION MODAL -->
+        <div id="subscriptionModal" class="bg-slate-900 border border-slate-800/80 rounded-3xl max-w-md w-full p-6 shadow-2xl transform scale-95 transition-transform duration-300 hidden flex-col max-h-[90vh] overflow-y-auto">
+            
+            <!-- Modal Header -->
+            <div class="text-center relative mb-6">
+                <!-- Floating lock with crown -->
+                <div class="relative inline-flex mb-3">
+                    <div class="bg-amber-500/10 p-4 rounded-2xl text-amber-400 border border-amber-500/30 shadow-lg shadow-amber-500/5">
+                        <i data-lucide="lock" class="w-8 h-8"></i>
+                    </div>
+                    <div class="absolute -top-3 -right-3 bg-gradient-to-tr from-amber-400 to-amber-300 text-slate-950 p-1 rounded-full border-2 border-slate-900 shadow-md">
+                        <i data-lucide="crown" class="w-3.5 h-3.5 fill-slate-950"></i>
+                    </div>
+                </div>
+                <h2 class="text-2xl font-black tracking-tight text-white flex items-center justify-center gap-2">
+                    🔒 Result Locked!
+                </h2>
+                <p class="text-slate-400 text-xs mt-1.5">
+                    This advanced calculation requires an active **Euler-X Premium** subscription.
+                </p>
+            </div>
+
+            <!-- Fake Plans Grid -->
+            <div class="flex flex-col gap-3 mb-6">
+                <!-- Basic Plan -->
+                <label class="relative flex items-center justify-between p-3.5 rounded-2xl bg-slate-950/40 border border-slate-800 hover:border-slate-700 cursor-pointer transition duration-150 group">
+                    <div class="flex items-center gap-3">
+                        <input type="radio" name="paymentPlan" value="9" class="w-4 h-4 text-indigo-500 focus:ring-0 focus:ring-offset-0 bg-slate-800 border-slate-700">
+                        <div>
+                            <span class="font-bold text-sm text-slate-200 block">Basic Plan</span>
+                            <span class="text-[10px] text-slate-400">Perfect for 1+1 calculations. Billed millisecondly.</span>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="font-mono-custom font-extrabold text-white text-base">৳9</span>
+                        <span class="text-[9px] text-slate-500 block">/ calc</span>
+                    </div>
+                </label>
+
+                <!-- Premium Plan (Best Value - Pre-selected) -->
+                <label class="relative flex items-center justify-between p-3.5 rounded-2xl bg-indigo-500/5 border-2 border-indigo-500/70 cursor-pointer transition duration-150 group">
+                    <!-- Recommended Badge -->
+                    <span class="absolute -top-2.5 right-4 bg-gradient-to-r from-indigo-500 to-violet-500 text-[9px] font-black text-white px-2 py-0.5 rounded-full tracking-wide uppercase shadow-sm">Best Value</span>
+                    
+                    <div class="flex items-center gap-3">
+                        <input type="radio" name="paymentPlan" value="49" checked class="w-4 h-4 text-indigo-500 focus:ring-0 focus:ring-offset-0 bg-slate-800 border-slate-700">
+                        <div>
+                            <span class="font-bold text-sm text-indigo-300 block">Premium Plan</span>
+                            <span class="text-[10px] text-slate-400">Includes division, decimals, &amp; the number 7.</span>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="font-mono-custom font-extrabold text-indigo-300 text-base">৳49</span>
+                        <span class="text-[9px] text-indigo-400/70 block">/ month</span>
+                    </div>
+                </label>
+
+                <!-- VIP Plan -->
+                <label class="relative flex items-center justify-between p-3.5 rounded-2xl bg-slate-950/40 border border-slate-800 hover:border-slate-700 cursor-pointer transition duration-150 group">
+                    <div class="flex items-center gap-3">
+                        <input type="radio" name="paymentPlan" value="99" class="w-4 h-4 text-indigo-500 focus:ring-0 focus:ring-offset-0 bg-slate-800 border-slate-700">
+                        <div>
+                            <span class="font-bold text-sm text-slate-200 block">VIP Royal Plan</span>
+                            <span class="text-[10px] text-slate-400">Div-by-Zero shield &amp; infinite decimal spaces.</span>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="font-mono-custom font-extrabold text-white text-base">৳99</span>
+                        <span class="text-[9px] text-slate-500 block">/ lifetime</span>
+                    </div>
+                </label>
+            </div>
+
+            <!-- Premium Features Locklist -->
+            <div class="bg-slate-950/60 border border-slate-850 rounded-2xl p-3.5 mb-6 text-xs">
+                <p class="font-bold text-slate-300 mb-2 flex items-center gap-1.5">
+                    <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i> Subscription Includes:
+                </p>
+                <ul class="space-y-1.5 text-slate-400">
+                    <li class="flex items-start gap-2">
+                        <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-500 mt-0.5 shrink-0"></i>
+                        <span>Unlimited use of keys <strong>7, 8, and 9</strong> (Standard: Locked)</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-500 mt-0.5 shrink-0"></i>
+                        <span>Zero-Division Shield (prevent spacetime collapse)</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-500 mt-0.5 shrink-0"></i>
+                        <span>Negative numbers DLC (Expansion pack)</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-500 mt-0.5 shrink-0"></i>
+                        <span>Instant support (we answer in roman numerals)</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Promo Code Accordion -->
+            <div class="mb-5">
+                <div class="flex items-center justify-between text-xs font-semibold text-slate-400 mb-1.5 px-1">
+                    <span>Have a promo code?</span>
+                    <span class="text-[10px] text-indigo-400">HURRY20, FREE99</span>
+                </div>
+                <div class="flex gap-2">
+                    <input type="text" id="promoInput" placeholder="Enter code (e.g. TROLL)" class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs w-full text-white placeholder-slate-600 focus:outline-none focus:border-indigo-500 font-mono-custom uppercase">
+                    <button onclick="applyPromoCode()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-bold rounded-xl transition cursor-pointer">Apply</button>
+                </div>
+                <p id="promoFeedback" class="text-[10px] text-rose-400 mt-1 hidden font-semibold"></p>
+            </div>
+
+            <!-- Checkout Buttons -->
+            <div class="flex flex-col gap-2.5 mt-auto">
+                <!-- PAY NOW BUTTON -->
+                <button onclick="triggerPayment()" class="w-full py-3.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black tracking-wide rounded-2xl shadow-lg shadow-orange-500/15 transition transform active:scale-98 flex items-center justify-center gap-2 text-sm cursor-pointer">
+                    <i data-lucide="credit-card" class="w-4 h-4 fill-slate-950"></i> PAY NOW
+                </button>
+                <!-- CANCEL BUTTON -->
+                <button onclick="closeModal()" class="w-full py-2.5 bg-slate-950/40 hover:bg-slate-950/80 border border-slate-800/80 text-slate-400 hover:text-slate-200 font-medium rounded-xl transition text-xs cursor-pointer">
+                    Cancel Calculation &amp; Lose Progress
+                </button>
+            </div>
+
+            <!-- Funny testimonial -->
+            <p class="text-[10px] text-slate-500 text-center mt-3 italic font-serif">
+                "Best financial decision ever. My 2+2 is now safely locked in a vault." — Albert E.
+            </p>
+        </div>
+
+        <!-- 2. PAYMENT FAILED MODAL -->
+        <div id="failureModal" class="bg-slate-900 border border-slate-800/80 rounded-3xl max-w-md w-full p-6 shadow-2xl transform scale-95 transition-transform duration-300 hidden flex-col">
+            
+            <div class="text-center relative mb-5">
+                <!-- Red Alert Circle -->
+                <div class="bg-rose-500/10 p-4 rounded-2xl text-rose-500 border border-rose-500/30 shadow-lg inline-flex mb-3">
+                    <i data-lucide="alert-triangle" class="w-8 h-8 animate-pulse"></i>
+                </div>
+                <h2 class="text-2xl font-black tracking-tight text-white">Payment Failed 😭</h2>
+                <p class="text-rose-400 font-bold text-sm mt-1">"Math is free, but not today."</p>
+            </div>
+
+            <!-- Error Details -->
+            <div class="bg-slate-950/80 border border-slate-850 rounded-2xl p-4 mb-5 text-xs text-slate-300 space-y-2 font-mono-custom">
+                <div class="flex justify-between border-b border-slate-900 pb-1.5">
+                    <span class="text-slate-500">ERROR_CODE:</span>
+                    <span class="text-rose-400 font-bold">INSIGNIFICANT_FUNDS_OR_IQ</span>
+                </div>
+                <div class="flex justify-between border-b border-slate-900 pb-1.5">
+                    <span class="text-slate-500">REASON:</span>
+                    <span class="text-right text-slate-200">Bank suspects 2+2 is actually 5 in this economy.</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-slate-500">DECISION:</span>
+                    <span class="text-slate-200">Transaction blocked by Math Union Syndicate.</span>
+                </div>
+            </div>
+
+            <p class="text-slate-400 text-xs font-semibold text-center mb-4">
+                Please try one of our 100% functional alternative payment methods:
+            </p>
+
+            <!-- Alternative Methods Menu -->
+            <div class="flex flex-col gap-2.5 mb-5">
+                <!-- Compliment -->
+                <button onclick="showAlternative('compliment')" class="w-full py-3 px-4 bg-slate-950 hover:bg-slate-800/80 border border-slate-800 hover:border-slate-700 text-left text-xs font-medium rounded-xl flex items-center justify-between transition group cursor-pointer">
+                    <span class="flex items-center gap-2.5">
+                        <i data-lucide="message-square-heart" class="w-4 h-4 text-pink-400 group-hover:scale-110 transition"></i>
+                        <span>Method A: <strong>Pay with a Compliment</strong></span>
+                    </span>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500"></i>
+                </button>
+
+                <!-- 30s Ad -->
+                <button onclick="showAlternative('ad')" class="w-full py-3 px-4 bg-slate-950 hover:bg-slate-800/80 border border-slate-800 hover:border-slate-700 text-left text-xs font-medium rounded-xl flex items-center justify-between transition group cursor-pointer">
+                    <span class="flex items-center gap-2.5">
+                        <i data-lucide="play-circle" class="w-4 h-4 text-emerald-400 group-hover:scale-110 transition"></i>
+                        <span>Method B: <strong>Watch a 30s Ad</strong></span>
+                    </span>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500"></i>
+                </button>
+
+                <!-- Impossible Captcha -->
+                <button onclick="showAlternative('captcha')" class="w-full py-3 px-4 bg-slate-950 hover:bg-slate-800/80 border border-slate-800 hover:border-slate-700 text-left text-xs font-medium rounded-xl flex items-center justify-between transition group cursor-pointer">
+                    <span class="flex items-center gap-2.5">
+                        <i data-lucide="shield-alert" class="w-4 h-4 text-amber-400 group-hover:scale-110 transition"></i>
+                        <span>Method C: <strong>Prove You Are Not a Robot</strong></span>
+                    </span>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500"></i>
+                </button>
+            </div>
+
+            <div class="flex gap-2">
+                <button onclick="backToPlans()" class="w-1/2 py-2.5 bg-slate-850 hover:bg-slate-800 text-slate-300 text-xs font-bold rounded-xl transition flex items-center justify-center gap-1 cursor-pointer">
+                    <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Different Plan
+                </button>
+                <button onclick="closeModal()" class="w-1/2 py-2.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 text-xs font-bold rounded-xl border border-rose-500/20 transition cursor-pointer">
+                    Give Up Math
+                </button>
+            </div>
+        </div>
+
+        <!-- 3. COMPLIMENT ALTERNATIVE -->
+        <div id="complimentModal" class="bg-slate-900 border border-slate-800/80 rounded-3xl max-w-md w-full p-6 shadow-2xl transform scale-95 transition-transform duration-300 hidden flex-col">
+            <div class="text-center mb-4">
+                <div class="bg-pink-500/10 p-4 rounded-2xl text-pink-400 border border-pink-500/30 inline-flex mb-2">
+                    <i data-lucide="heart" class="w-8 h-8 fill-pink-400/10"></i>
+                </div>
+                <h3 class="text-xl font-black text-white">Flattery-Based Transaction</h3>
+                <p class="text-slate-400 text-xs mt-1">Our computational server feeds entirely on positive reinforcement.</p>
+            </div>
+
+            <div class="space-y-3.5 mb-5">
+                <label class="block text-xs font-semibold text-slate-400">Write a beautiful compliment to this calculator (Minimum 10 words):</label>
+                <textarea id="complimentInput" rows="3" placeholder="Dear Euler-X, your keycaps are so clicky and your processing speeds are so majestic..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-pink-500 resize-none"></textarea>
+                <p id="complimentWarning" class="text-[10px] text-pink-400 font-semibold hidden"></p>
+            </div>
+
+            <div class="flex gap-2">
+                <button onclick="backToFailure()" class="w-1/3 py-2.5 bg-slate-950 border border-slate-800 text-slate-400 text-xs font-semibold rounded-xl transition cursor-pointer">Back</button>
+                <button onclick="submitCompliment()" class="w-2/3 py-2.5 bg-pink-600 hover:bg-pink-500 text-white text-xs font-bold rounded-xl transition shadow-lg shadow-pink-500/10 flex items-center justify-center gap-1.5 cursor-pointer">
+                    <i data-lucide="send" class="w-3.5 h-3.5"></i> Transmit Compliment
+                </button>
+            </div>
+        </div>
+
+        <!-- 4. WATCH FAKE AD ALTERNATIVE -->
+        <div id="adModal" class="bg-slate-900 border border-slate-800/80 rounded-3xl max-w-md w-full p-6 shadow-2xl transform scale-95 transition-transform duration-300 hidden flex-col">
+            <div class="text-center mb-4">
+                <span class="text-[10px] font-black tracking-widest text-emerald-400 uppercase bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">Sponsored Media Method</span>
+                <h3 class="text-xl font-black text-white mt-2">Watch Video to Unlock Answer</h3>
+                <p class="text-slate-400 text-xs mt-1">Do not close this window. High-energy mathematics will play shortly.</p>
+            </div>
+
+            <!-- Fake Video Player Screen -->
+            <div class="bg-black border border-slate-800 rounded-2xl aspect-video w-full mb-5 flex flex-col items-center justify-center p-6 text-center relative overflow-hidden">
+                <!-- Animated grid or overlay inside the "video" -->
+                <div class="absolute inset-0 bg-radial-[circle_at_center,_var(--tw-gradient-stops)] from-slate-950/40 via-transparent to-black pointer-events-none"></div>
+                
+                <!-- Ad Spinner or Content -->
+                <div id="videoAdLoader" class="z-10 flex flex-col items-center gap-4">
+                    <!-- Spinning loading circle -->
+                    <div class="w-12 h-12 border-4 border-emerald-500/30 border-t-emerald-400 rounded-full animate-spin"></div>
+                    <div>
+                        <p class="font-bold text-sm text-slate-200">Buffering Premium Content...</p>
+                        <p class="text-[10px] text-slate-500 mt-0.5">Please wait, allocating mathematical bandwidth.</p>
+                    </div>
+                </div>
+
+                <div id="videoAdContent" class="z-10 hidden flex-col items-center gap-2">
+                    <div class="bg-indigo-500/20 p-3 rounded-full text-indigo-400 mb-1">
+                        <i data-lucide="calculator" class="w-8 h-8 animate-bounce"></i>
+                    </div>
+                    <p id="videoAdTitle" class="font-black text-base text-white tracking-tight">ENLARGE YOUR CALCULATOR NOW!</p>
+                    <p id="videoAdBody" class="text-xs text-slate-400 max-w-xs">Double your keypad digits in just 7 days with our weird herbal math pills!</p>
+                    <span class="mt-2 text-[9px] text-indigo-400 font-mono-custom bg-indigo-500/10 border border-indigo-500/30 px-2 py-0.5 rounded-full">100% ACCREDITED BY MATH PROFESSORS</span>
+                </div>
+
+                <!-- Timer Overlay -->
+                <div class="absolute bottom-3 right-3 bg-black/80 backdrop-blur border border-slate-800 px-3 py-1.5 rounded-lg text-xs font-bold font-mono-custom text-emerald-400 flex items-center gap-1.5">
+                    <i data-lucide="clock" class="w-3.5 h-3.5"></i>
+                    <span id="adCountdown">30</span>s remaining
+                </div>
+            </div>
+
+            <!-- Ad Controls -->
+            <div>
+                <button id="skipAdBtn" disabled onclick="skipAdTroll()" class="w-full py-3 bg-slate-950 border border-slate-800 text-slate-600 font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition cursor-not-allowed">
+                    <i data-lucide="skip-forward" class="w-4 h-4"></i> Skip Ad (Locked)
+                </button>
+                <p class="text-center text-[9px] text-slate-500 mt-2.5">Skip button will unlock after ad completes (or after inflation increases the price).</p>
+            </div>
+        </div>
+
+        <!-- 5. IMPOSSIBLE CAPTCHA ALTERNATIVE -->
+        <div id="captchaModal" class="bg-slate-900 border border-slate-800/80 rounded-3xl max-w-sm w-full p-5 shadow-2xl transform scale-95 transition-transform duration-300 hidden flex-col">
+            <div class="text-center mb-4">
+                <div class="bg-amber-500/10 p-3 rounded-xl text-amber-400 border border-amber-500/20 inline-flex mb-1.5">
+                    <i data-lucide="shield-check" class="w-6 h-6"></i>
+                </div>
+                <h3 class="text-lg font-black text-white">Identity Authentication</h3>
+                <p class="text-slate-400 text-xs mt-0.5">Please verify that you possess human neural tissue.</p>
+            </div>
+
+            <!-- Captcha Grid Box -->
+            <div class="bg-slate-950 border border-slate-800 rounded-2xl p-3 mb-4">
+                <div class="bg-indigo-600 p-2.5 rounded-lg text-white text-xs font-bold mb-3">
+                    <p class="text-[10px] text-indigo-200 font-normal uppercase tracking-wider">Select all squares containing:</p>
+                    <p class="text-sm font-black tracking-tight" id="captchaQuestion">A stable emotional state</p>
+                </div>
+
+                <!-- 3x3 Grid -->
+                <div class="grid grid-cols-3 gap-1.5" id="captchaGrid">
+                    <!-- Captcha squares will be injected dynamically -->
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="flex gap-2">
+                <button onclick="backToFailure()" class="w-1/3 py-2 bg-slate-950 border border-slate-800 text-slate-400 text-xs font-bold rounded-lg transition cursor-pointer">Back</button>
+                <button onclick="verifyCaptcha()" class="w-2/3 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-lg transition flex items-center justify-center gap-1 cursor-pointer">
+                    <i data-lucide="check-circle" class="w-3.5 h-3.5"></i> Verify Identity
+                </button>
+            </div>
+            <p id="captchaError" class="text-[10px] text-rose-400 font-semibold text-center mt-2 hidden"></p>
+        </div>
+
+    </div>
+
+    <!-- ================= LIVE CHAT WIDGET ================= -->
+    <div class="fixed bottom-4 right-4 z-40 flex flex-col items-end">
+        <!-- Chat Box -->
+        <div id="chatBox" class="w-72 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl mb-2 flex-col overflow-hidden hidden transition-all duration-300">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-violet-600 to-indigo-500 p-3 text-white flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <div class="relative">
+                        <div class="bg-slate-950 p-1 rounded-full text-indigo-300">
+                            <i data-lucide="bot" class="w-4 h-4"></i>
+                        </div>
+                        <span class="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-emerald-400 border border-indigo-600"></span>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold">Euler Support Bot</p>
+                        <p class="text-[9px] text-indigo-200">Usually replies instantly</p>
+                    </div>
+                </div>
+                <button onclick="toggleChat()" class="text-indigo-200 hover:text-white transition cursor-pointer">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <!-- Message Area -->
+            <div id="chatMessages" class="p-3 h-48 overflow-y-auto space-y-2.5 text-xs bg-slate-950/80 flex flex-col">
+                <div class="bg-slate-800/80 text-slate-300 p-2.5 rounded-2xl rounded-tl-none max-w-[85%] self-start border border-slate-750">
+                    Hello! I am the automated Euler computational support agent. How can I help you spend money today?
+                </div>
+            </div>
+
+            <!-- Chat Inputs -->
+            <div class="p-2 border-t border-slate-850 flex gap-1.5 bg-slate-900">
+                <input type="text" id="chatInput" placeholder="Ask support a question..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-indigo-500">
+                <button onclick="sendChatMessage()" class="bg-indigo-600 hover:bg-indigo-500 p-2 rounded-xl text-white transition cursor-pointer">
+                    <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Float Trigger Button -->
+        <button onclick="toggleChat()" class="bg-gradient-to-tr from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white p-3.5 rounded-full shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/35 transition duration-200 cursor-pointer active:scale-95 flex items-center justify-center gap-1.5 relative border border-indigo-400/20 group">
+            <!-- Ping indicator -->
+            <span class="absolute -top-1 -right-1 flex h-3.5 w-3.5">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-indigo-500 border border-slate-950"></span>
+            </span>
+            <i data-lucide="message-square" class="w-5 h-5 group-hover:rotate-12 transition duration-200"></i>
+            <span class="text-xs font-bold pr-1 hidden sm:inline">Ask Support</span>
+        </button>
+    </div>
+
+    <!-- AUDIO TOGGLE CONTROLLER -->
+    <script>
+        // Web Audio API Synth setup for premium audio troll experience
+        let audioContext = null;
+        let isSoundEnabled = true;
+
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playSynthTone(freq, type, duration, delay = 0) {
+            if (!isSoundEnabled) return;
+            initAudio();
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+
+            setTimeout(() => {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                
+                osc.type = type;
+                osc.frequency.value = freq;
+                
+                gain.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duration);
+                
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                
+                osc.start();
+                osc.stop(audioContext.currentTime + duration);
+            }, delay * 1000);
+        }
+
+        // Specific Sound FX profiles
+        function playClickSound() {
+            playSynthTone(600, 'sine', 0.04);
+        }
+
+        function playErrorSound() {
+            playSynthTone(180, 'sawtooth', 0.25);
+            playSynthTone(120, 'sawtooth', 0.25, 0.1);
+        }
+
+        function playChimeSound() {
+            playSynthTone(523.25, 'sine', 0.15, 0);   // C5
+            playSynthTone(659.25, 'sine', 0.15, 0.08);  // E5
+            playSynthTone(783.99, 'sine', 0.15, 0.16);  // G5
+            playSynthTone(1046.50, 'sine', 0.3, 0.24);  // C6
+        }
+
+        function playSirens() {
+            let now = 0;
+            for(let i = 0; i < 6; i++) {
+                playSynthTone(i % 2 === 0 ? 400 : 300, 'triangle', 0.15, now);
+                now += 0.15;
+            }
+        }
+
+        function toggleSound() {
+            isSoundEnabled = !isSoundEnabled;
+            const icon = document.getElementById('soundIcon');
+            const statusText = document.getElementById('soundStatus');
+            
+            if (isSoundEnabled) {
+                icon.setAttribute('data-lucide', 'volume-2');
+                icon.className = "w-4 h-4 text-indigo-400";
+                statusText.innerText = "SFX On";
+                playClickSound();
+            } else {
+                icon.setAttribute('data-lucide', 'volume-x');
+                icon.className = "w-4 h-4 text-slate-500";
+                statusText.innerText = "SFX Off";
+            }
+            lucide.createIcons();
+        }
+    </script>
+
+    <!-- CALCULATOR & TROLL SYSTEM LOGIC -->
+    <script>
+        // DOM References
+        const calcDisplay = document.getElementById('calcDisplay');
+        const calcHistory = document.getElementById('calcHistory');
+        const calculatorCard = document.getElementById('calculatorCard');
+        const modalOverlay = document.getElementById('modalOverlay');
+        
+        // Modals
+        const subscriptionModal = document.getElementById('subscriptionModal');
+        const failureModal = document.getElementById('failureModal');
+        const complimentModal = document.getElementById('complimentModal');
+        const adModal = document.getElementById('adModal');
+        const captchaModal = document.getElementById('captchaModal');
+
+        // Calculator state
+        let displayValue = '0';
+        let equation = '';
+        let shouldResetDisplay = false;
+
+        // Updates screen rendering
+        function updateDisplay() {
+            // Trim leading zeroes unless it is a decimal
+            calcDisplay.innerText = displayValue;
+            calcHistory.innerText = equation;
+            // Scroll right if overflow
+            calcDisplay.parentElement.scrollLeft = calcDisplay.parentElement.scrollWidth;
+        }
+
+        // Click handler for numbers
+        function pressNumber(num) {
+            playClickSound();
+            
+            if (displayValue === '0' || shouldResetDisplay) {
+                displayValue = num;
+                shouldResetDisplay = false;
+            } else {
+                displayValue += num;
+            }
+            updateDisplay();
+        }
+
+        // Click handler for operators
+        function pressOperator(op) {
+            playClickSound();
+            
+            let lastChar = equation.slice(-1);
+            if (shouldResetDisplay) {
+                equation = displayValue + ' ' + op;
+                shouldResetDisplay = false;
+            } else if (displayValue !== '0') {
+                if (equation === '') {
+                    equation = displayValue + ' ' + op;
+                } else {
+                    equation += ' ' + displayValue + ' ' + op;
+                }
+            } else if (['+', '-', '*', '/'].includes(lastChar)) {
+                // Replace last operator
+                equation = equation.slice(0, -1) + op;
+            }
+            displayValue = '0';
+            updateDisplay();
+        }
+
+        // Decimal handler
+        function pressDecimal() {
+            playClickSound();
+            if (shouldResetDisplay) {
+                displayValue = '0.';
+                shouldResetDisplay = false;
+                updateDisplay();
+                return;
+            }
+            if (!displayValue.includes('.')) {
+                displayValue += '.';
+            }
+            updateDisplay();
+        }
+
+        // Backspace handler
+        function pressBackspace() {
+            playClickSound();
+            if (shouldResetDisplay) {
+                displayValue = '0';
+                shouldResetDisplay = false;
+            } else if (displayValue.length > 1) {
+                displayValue = displayValue.slice(0, -1);
+            } else {
+                displayValue = '0';
+            }
+            updateDisplay();
+        }
+
+        // AC Clear handler
+        function pressClear() {
+            playClickSound();
+            displayValue = '0';
+            equation = '';
+            shouldResetDisplay = false;
+            updateDisplay();
+        }
+
+        // Keyboard mapping logic
+        document.addEventListener('keydown', function(event) {
+            const key = event.key;
+            if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') {
+                return; // Let user type in inputs normally
+            }
+            
+            if (key >= '0' && key <= '9') {
+                pressNumber(key);
+            } else if (key === '.') {
+                pressDecimal();
+            } else if (key === '+' || key === '-' || key === '*' || key === '/') {
+                pressOperator(key);
+            } else if (key === 'Enter' || key === '=') {
+                event.preventDefault();
+                pressEquals();
+            } else if (key === 'Backspace') {
+                pressBackspace();
+            } else if (key === 'Escape') {
+                pressClear();
+            }
+        });
+
+        // Trigger Paywall Modal on Equals Click
+        function pressEquals() {
+            if (isFreeTrialActive) {
+                // If they have the active 3-second free trial, let them think it might work
+                failFreeTrial();
+                return;
+            }
+
+            // Normal paywall trigger
+            playChimeSound();
+            
+            // Setup visual equation logic to make it look legitimate in background
+            if (displayValue !== '0' && !shouldResetDisplay) {
+                equation += ' ' + displayValue;
+            }
+            updateDisplay();
+
+            // Display overlay
+            modalOverlay.classList.remove('opacity-0', 'pointer-events-none');
+            // Hide all sub-modals first
+            hideAllModals();
+            // Show subscription modal
+            subscriptionModal.classList.remove('hidden');
+            subscriptionModal.classList.add('flex');
+            // Animate scale in
+            setTimeout(() => {
+                subscriptionModal.classList.remove('scale-95');
+                subscriptionModal.classList.add('scale-100');
+            }, 50);
+        }
+
+        function hideAllModals() {
+            const modals = [subscriptionModal, failureModal, complimentModal, adModal, captchaModal];
+            modals.forEach(m => {
+                m.classList.add('hidden');
+                m.classList.remove('flex', 'scale-100');
+                m.classList.add('scale-95');
+            });
+        }
+
+        function closeModal() {
+            playClickSound();
+            modalOverlay.classList.add('opacity-0', 'pointer-events-none');
+            hideAllModals();
+        }
+
+        // Promo Code Mechanics
+        function applyPromoCode() {
+            const promoInput = document.getElementById('promoInput');
+            const feedback = document.getElementById('promoFeedback');
+            const code = promoInput.value.trim().toUpperCase();
+            
+            playClickSound();
+            feedback.classList.remove('hidden');
+            
+            if (code === '') {
+                feedback.innerText = "⚠️ Please enter a code.";
+                return;
+            }
+
+            const expiredMessages = [
+                `Code "${code}" expired exactly 2.4 seconds ago!`,
+                `Code "${code}" requires a super-premium VIP account to validate.`,
+                `Promo error: Code "${code}" is only valid in parallel universes.`,
+                `Security Alert: Code "${code}" has been flagged as suspicious behavior.`,
+                `Code "${code}" redeemed! Discount of ৳0.00 applied.`
+            ];
+            
+            const randomMsg = expiredMessages[Math.floor(Math.random() * expiredMessages.length)];
+            feedback.innerText = "❌ " + randomMsg;
+            playErrorSound();
+        }
+
+        // PAY NOW TRIGGER -> Goes to Failure Screen
+        function triggerPayment() {
+            playErrorSound();
+            playSirens();
+            
+            // Transitions to failure modal
+            subscriptionModal.classList.add('hidden');
+            subscriptionModal.classList.remove('flex', 'scale-100');
+            
+            failureModal.classList.remove('hidden');
+            failureModal.classList.add('flex');
+            
+            // Add shake animation to failure modal to emphasize crash
+            failureModal.classList.add('animate-shake');
+            setTimeout(() => {
+                failureModal.classList.remove('animate-shake');
+            }, 600);
+            
+            setTimeout(() => {
+                failureModal.classList.remove('scale-95');
+                failureModal.classList.add('scale-100');
+            }, 50);
+        }
+
+        function backToPlans() {
+            playClickSound();
+            failureModal.classList.add('hidden');
+            failureModal.classList.remove('flex', 'scale-100');
+            
+            subscriptionModal.classList.remove('hidden');
+            subscriptionModal.classList.add('flex');
+            setTimeout(() => {
+                subscriptionModal.classList.remove('scale-95');
+                subscriptionModal.classList.add('scale-100');
+            }, 50);
+        }
+
+        function backToFailure() {
+            playClickSound();
+            hideAllModals();
+            
+            failureModal.classList.remove('hidden');
+            failureModal.classList.add('flex');
+            setTimeout(() => {
+                failureModal.classList.remove('scale-95');
+                failureModal.classList.add('scale-100');
+            }, 50);
+        }
+
+        // ALTERNATIVE SELECTIONS
+        function showAlternative(type) {
+            playClickSound();
+            hideAllModals();
+            
+            let targetModal;
+            if (type === 'compliment') {
+                targetModal = complimentModal;
+                document.getElementById('complimentInput').value = '';
+                document.getElementById('complimentWarning').classList.add('hidden');
+            } else if (type === 'ad') {
+                targetModal = adModal;
+                startFakeVideoAd();
+            } else if (type === 'captcha') {
+                targetModal = captchaModal;
+                generateCaptcha();
+            }
+            
+            targetModal.classList.remove('hidden');
+            targetModal.classList.add('flex');
+            setTimeout(() => {
+                targetModal.classList.remove('scale-95');
+                targetModal.classList.add('scale-100');
+            }, 50);
+        }
+    </script>
+
+    <!-- ALTERNATIVE 1: COMPLIMENT SCREEN LOGIC -->
+    <script>
+        function submitCompliment() {
+            const input = document.getElementById('complimentInput').value.trim();
+            const warning = document.getElementById('complimentWarning');
+            playClickSound();
+            
+            // Check word count (minimum 10 words)
+            const words = input.split(/\s+/).filter(w => w.length > 0);
+            
+            if (words.length < 10) {
+                warning.innerText = `⚠️ Insufficient praise! Only ${words.length}/10 words. Our ego requires more descriptive prose.`;
+                warning.classList.remove('hidden');
+                playErrorSound();
+                return;
+            }
+
+            // Troll rejection message
+            warning.innerText = "❌ Flattery will get you everywhere, except past this paywall. Compliment rejected by the algorithm for sounding 'too desperate'.";
+            warning.classList.remove('hidden');
+            playErrorSound();
+        }
+    </script>
+
+    <!-- ALTERNATIVE 2: 30-SECOND VIDEO AD LOGIC -->
+    <script>
+        let adInterval = null;
+        let adSecondsLeft = 30;
+        let adInflated = false;
+
+        const fakeAds = [
+            {
+                title: "❌ DO YOU HATE MATH?",
+                body: "Get premium 'Anti-Math' goggles! Instantly blurs all algebra on contact. Only ৳499!",
+                btnText: "Delete Math Now"
+            },
+            {
+                title: "👑 LOCAL EQUATIONS NEAR YOU!",
+                body: "X is single and waiting to be solved. No coefficient limits. Click to calculate!",
+                btnText: "Find Solve mates"
+            },
+            {
+                title: "⚠️ DIVIDE BY ZERO SECRETS",
+                body: "Mathematicians hate this one weird trick! Click to blow up your neighborhood calculator.",
+                btnText: "Break Spacetime"
+            },
+            {
+                title: "📈 EXPAND YOUR DIGITS",
+                body: "Enlarge your decimal places by 12 points in 1 week. Guaranteed results or money back.",
+                btnText: "Get Longer Decimals"
+            }
+        ];
+
+        function startFakeVideoAd() {
+            adSecondsLeft = 30;
+            adInflated = false;
+            document.getElementById('adCountdown').innerText = adSecondsLeft;
+            
+            const loader = document.getElementById('videoAdLoader');
+            const content = document.getElementById('videoAdContent');
+            const skipBtn = document.getElementById('skipAdBtn');
+            
+            loader.classList.remove('hidden');
+            loader.classList.add('flex');
+            content.classList.add('hidden');
+            
+            skipBtn.disabled = true;
+            skipBtn.className = "w-full py-3 bg-slate-950 border border-slate-850 text-slate-600 font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition cursor-not-allowed";
+            
+            // Buffering simulation
+            setTimeout(() => {
+                loader.classList.add('hidden');
+                loader.classList.remove('flex');
+                content.classList.remove('hidden');
+                content.classList.add('flex');
+                
+                // Show first ad immediately
+                rotateAdContent();
+            }, 2500);
+
+            clearInterval(adInterval);
+            adInterval = setInterval(() => {
+                adSecondsLeft--;
+                if (adSecondsLeft < 0) adSecondsLeft = 0;
+                document.getElementById('adCountdown').innerText = adSecondsLeft;
+                
+                // Rotate ads every 6 seconds
+                if (adSecondsLeft % 6 === 0 && adSecondsLeft > 0) {
+                    rotateAdContent();
+                }
+                
+                if (adSecondsLeft === 0) {
+                    clearInterval(adInterval);
+                    enableSkipBtn();
+                }
+            }, 1000);
+        }
+
+        function rotateAdContent() {
+            const ad = fakeAds[Math.floor(Math.random() * fakeAds.length)];
+            document.getElementById('videoAdTitle').innerText = ad.title;
+            document.getElementById('videoAdBody').innerText = ad.body;
+            // Update the fake ad button in the video too just for laughs
+            const videoBtn = document.querySelector("#videoAdContent span");
+            if (videoBtn) videoBtn.innerText = ad.btnText;
+            
+            // Random beep sound to keep user awake
+            playSynthTone(300, 'triangle', 0.05);
+        }
+
+        function enableSkipBtn() {
+            const skipBtn = document.getElementById('skipAdBtn');
+            skipBtn.disabled = false;
+            skipBtn.className = "w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-xs rounded-xl flex items-center justify-center gap-2 transition cursor-pointer active:scale-98 shadow-md shadow-emerald-500/10";
+            playChimeSound();
+        }
+
+        function skipAdTroll() {
+            playErrorSound();
+            playSirens();
+            // Troll punchline: Ad completed, but price inflated!
+            alert("⚠️ INFLATION WARNING!\n\nDuring the 30 seconds you watched that advertisement, the global index of mathematics inflated by 400%.\n\nThe cost of this calculation is now ৳199. Please purchase a plan again.");
+            
+            // Close ad modal, update plan prices to show inflation, and return to plans
+            adInflated = true;
+            inflatePrices();
+            
+            hideAllModals();
+            subscriptionModal.classList.remove('hidden');
+            subscriptionModal.classList.add('flex');
+            setTimeout(() => {
+                subscriptionModal.classList.remove('scale-95');
+                subscriptionModal.classList.add('scale-100');
+            }, 50);
+        }
+
+        function inflatePrices() {
+            const plans = document.querySelectorAll('name=["paymentPlan"]');
+            // Let's modify the UI labels to reflect hilarious inflated prices
+            const priceLabels = document.querySelectorAll('.font-mono-custom.font-extrabold.text-white, .font-mono-custom.font-extrabold.text-indigo-300');
+            if (priceLabels.length >= 3) {
+                priceLabels[0].innerText = "৳199";
+                priceLabels[1].innerText = "৳499";
+                priceLabels[2].innerText = "৳999";
+            }
+            
+            // Update subtext
+            const subTexts = document.querySelectorAll('label span.text-\\[10px\\]');
+            if (subTexts.length >= 3) {
+                subTexts[0].innerText = "Now includes luxury calculation tax. Billed nanosecondly.";
+                subTexts[1].innerText = "Includes access to number 7, 8, and *potentially* 9.";
+                subTexts[2].innerText = "Spacetime collapse insurance included in price.";
+            }
+        }
+    </script>
+
+    <!-- ALTERNATIVE 3: IMPOSSIBLE CAPTCHA LOGIC -->
+    <script>
+        const captchaOptions = [
+            {
+                question: "Select all squares containing: Genuine Happiness",
+                images: [
+                    "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=120&auto=format&fit=crop&q=60", // landscape
+                    "https://images.unsplash.com/photo-1489769002247-3ce6e9a5779b?w=120&auto=format&fit=crop&q=60", // abstract neon
+                    "https://images.unsplash.com/photo-1518770660439-4636190af475?w=120&auto=format&fit=crop&q=60", // microchip
+                    "https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=120&auto=format&fit=crop&q=60", // fluid colors
+                    "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=120&auto=format&fit=crop&q=60", // gradient blur
+                    "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=120&auto=format&fit=crop&q=60", // dark tech
+                ]
+            },
+            {
+                question: "Select all squares with: Financial Stability",
+                images: [
+                    "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=120&auto=format&fit=crop&q=60", // neon pink
+                    "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=120&auto=format&fit=crop&q=60", // matrix green code
+                    "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=120&auto=format&fit=crop&q=60", // cyber tech
+                    "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=120&auto=format&fit=crop&q=60", // portrait crying/serious
+                    "https://images.unsplash.com/photo-1507413245164-6160d8298b31?w=120&auto=format&fit=crop&q=60", // scientific lasers
+                    "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=120&auto=format&fit=crop&q=60", // digital interface
+                ]
+            },
+            {
+                question: "Select all squares containing: A stable housing market",
+                images: [
+                    "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=120&auto=format&fit=crop&q=60", // desert sand dunes
+                    "https://images.unsplash.com/photo-1518770660439-4636190af475?w=120&auto=format&fit=crop&q=60", // tech circuit
+                    "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=120&auto=format&fit=crop&q=60", // valley nature
+                    "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=120&auto=format&fit=crop&q=60", // abstract lines
+                    "https://images.unsplash.com/photo-1527866959852-ee3dbefb8b26?w=120&auto=format&fit=crop&q=60", // dramatic storm
+                    "https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=120&auto=format&fit=crop&q=60", // energy mesh
+                ]
+            }
+        ];
+
+        let selectedSquares = [];
+
+        function generateCaptcha() {
+            selectedSquares = [];
+            const errorText = document.getElementById('captchaError');
+            errorText.classList.add('hidden');
+
+            const option = captchaOptions[Math.floor(Math.random() * captchaOptions.length)];
+            document.getElementById('captchaQuestion').innerText = option.question;
+
+            const grid = document.getElementById('captchaGrid');
+            grid.innerHTML = '';
+
+            // Generate 9 squares (using repeating or random premium patterns from Unsplash)
+            // We mix the option's specific images to create a beautiful mosaic grid
+            for (let i = 0; i < 9; i++) {
+                const imgUrl = option.images[i % option.images.length] + `&sig=${i + Math.floor(Math.random()*100)}`;
+                const sq = document.createElement('div');
+                sq.className = "relative aspect-square rounded-lg border-2 border-transparent overflow-hidden cursor-pointer hover:opacity-90 active:scale-95 transition-all";
+                sq.innerHTML = `
+                    <img src="${imgUrl}" class="w-full h-full object-cover" alt="Verification Image">
+                    <div class="absolute inset-0 bg-indigo-600/30 opacity-0 transition flex items-center justify-center text-white select-none">
+                        <div class="bg-indigo-600 p-1.5 rounded-full shadow-lg">
+                            <i data-lucide="check" class="w-4 h-4 text-white"></i>
+                        </div>
+                    </div>
+                `;
+                
+                sq.onclick = () => toggleCaptchaSquare(i, sq);
+                grid.appendChild(sq);
+            }
+            lucide.createIcons();
+        }
+
+        function toggleCaptchaSquare(index, element) {
+            playClickSound();
+            const overlay = element.querySelector('.absolute');
+            
+            if (selectedSquares.includes(index)) {
+                selectedSquares = selectedSquares.filter(s => s !== index);
+                overlay.classList.add('opacity-0');
+                element.classList.remove('border-indigo-500');
+                element.classList.add('border-transparent');
+            } else {
+                selectedSquares.push(index);
+                overlay.classList.remove('opacity-0');
+                element.classList.add('border-indigo-500');
+                element.classList.remove('border-transparent');
+            }
+        }
+
+        function verifyCaptcha() {
+            const errorText = document.getElementById('captchaError');
+            errorText.classList.remove('hidden');
+            playErrorSound();
+
+            const fails = [
+                "Error: You clicked a square containing mild satisfaction instead of genuine happiness. Verification failed.",
+                "Error: Spacetime anomaly detected in square 4. Please verify again.",
+                "Error: You selected too fast, which is a highly automated robot behavior. Slow down your biological CPU.",
+                "Error: Our database shows you are indeed a robot pretending to be a human searching for emotional stability.",
+                "Error: Captcha expired in 0.04 seconds. Please refresh your humanity and try again."
+            ];
+
+            errorText.innerText = fails[Math.floor(Math.random() * fails.length)];
+            
+            // Regenerate after a short delay
+            setTimeout(() => {
+                generateCaptcha();
+            }, 2500);
+        }
+    </script>
+
+    <!-- HILARIOUS FREE TRIAL MODULE -->
+    <script>
+        let isFreeTrialActive = false;
+        let trialTimer = null;
+
+        function activateFreeTrial() {
+            playChimeSound();
+            
+            const trialBtn = document.getElementById('trialBtn');
+            trialBtn.disabled = true;
+            trialBtn.innerText = "Active: 3s";
+            trialBtn.className = "px-3 py-1.5 rounded-lg bg-emerald-500 text-slate-950 font-bold tracking-wide shadow-md transition duration-200 cursor-not-allowed text-[11px] animate-pulse";
+            
+            isFreeTrialActive = true;
+            let timeRemaining = 3.0;
+
+            // Flash calculator card green to show "Trial Activation"
+            calculatorCard.classList.add('ring-4', 'ring-emerald-500/40');
+
+            trialTimer = setInterval(() => {
+                timeRemaining -= 0.1;
+                if (timeRemaining <= 0) {
+                    timeRemaining = 0;
+                    clearInterval(trialTimer);
+                    expireTrialNow();
+                }
+                trialBtn.innerText = `Active: ${timeRemaining.toFixed(1)}s`;
+            }, 100);
+        }
+
+        function expireTrialNow() {
+            isFreeTrialActive = false;
+            calculatorCard.classList.remove('ring-4', 'ring-emerald-500/40');
+            
+            const trialBtn = document.getElementById('trialBtn');
+            trialBtn.disabled = false;
+            trialBtn.innerText = "Try Again";
+            trialBtn.className = "px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-bold tracking-wide shadow-md transition duration-200 cursor-pointer active:scale-95 text-[11px]";
+            
+            playErrorSound();
+        }
+
+        function failFreeTrial() {
+            clearInterval(trialTimer);
+            isFreeTrialActive = false;
+            calculatorCard.classList.remove('ring-4', 'ring-emerald-500/40');
+            
+            const trialBtn = document.getElementById('trialBtn');
+            trialBtn.disabled = false;
+            trialBtn.innerText = "Start Trial";
+            trialBtn.className = "px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold tracking-wide shadow-md transition duration-200 cursor-pointer active:scale-95 text-[11px]";
+
+            playErrorSound();
+            alert("⚠️ TRIAL LATENCY WARNING!\n\nYou pressed '=' but our servers detected that your free trial expired exactly 0.0001 seconds ago.\n\nPlease subscribe to our Premium Plan to remove computational latency.");
+            
+            // Immediately open paywall
+            pressEquals();
+        }
+    </script>
+
+    <!-- LIVE CHAT BOT LOGIC -->
+    <script>
+        let chatOpen = false;
+
+        function toggleChat() {
+            playClickSound();
+            const chatBox = document.getElementById('chatBox');
+            chatOpen = !chatOpen;
+            
+            if (chatOpen) {
+                chatBox.classList.remove('hidden');
+                chatBox.classList.add('flex');
+                // Scroll message area
+                const msgArea = document.getElementById('chatMessages');
+                msgArea.scrollTop = msgArea.scrollHeight;
+            } else {
+                chatBox.classList.add('hidden');
+                chatBox.classList.remove('flex');
+            }
+        }
+
+        const botReplies = [
+            "Your calculation is extremely important to us. You are currently number 8,492,104 in the queue. Expected wait time: 47 years.",
+            "Have you tried turning your mathematics off and on again?",
+            "To solve this equation, please mail a physical letter written in roman numerals to our headquarters.",
+            "Did you know? Subscribing to VIP Royal actually increases your personal IQ by 4.2% instantly! Try it now.",
+            "Our servers are currently busy calculating the last digit of Pi. Please do not ask any questions that require multiplication.",
+            "The support database indicates a critical error: You have not clicked 'Pay Now' enough times. Please click it harder.",
+            "If you are experiencing paywall issues, please upgrade to the VIP Premium Ultra Diamond tier for only ৳4,999."
+        ];
+
+        function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const msg = input.value.trim();
+            if (msg === '') return;
+            
+            playClickSound();
+            input.value = '';
+
+            const msgArea = document.getElementById('chatMessages');
+            
+            // Add user message
+            const userBubble = document.createElement('div');
+            userBubble.className = "bg-indigo-600 text-white p-2.5 rounded-2xl rounded-tr-none max-w-[85%] self-end shadow-sm";
+            userBubble.innerText = msg;
+            msgArea.appendChild(userBubble);
+            msgArea.scrollTop = msgArea.scrollHeight;
+
+            // Bot response simulator
+            setTimeout(() => {
+                playSynthTone(400, 'sine', 0.08);
+                const reply = botReplies[Math.floor(Math.random() * botReplies.length)];
+                
+                const botBubble = document.createElement('div');
+                botBubble.className = "bg-slate-800/80 text-slate-300 p-2.5 rounded-2xl rounded-tl-none max-w-[85%] self-start border border-slate-750";
+                botBubble.innerText = reply;
+                
+                msgArea.appendChild(botBubble);
+                msgArea.scrollTop = msgArea.scrollHeight;
+            }, 1200);
+        }
+
+        // Allow enter key inside support chat input
+        document.getElementById('chatInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                sendChatMessage();
+            }
+        });
+    </script>
+
+    <!-- FAKE AD ROTATOR BOTTOM BANNER -->
+    <script>
+        const bottomAds = [
+            {
+                title: "🔥 Learn this ONE weird trick!",
+                desc: "Local mathematics professor HATES him. Learn how to divide by zero safely.",
+                btn: "Learn Now"
+            },
+            {
+                title: "🔒 Calculate in Stealth Mode",
+                desc: "Don't let the government track your additions. Get VPN-Calc today.",
+                btn: "Go Incognito"
+            },
+            {
+                title: "📈 Math Inflation Alert!",
+                desc: "Prices of prime numbers are climbing rapidly. Invest in prime futures now!",
+                btn: "Buy Primes"
+            },
+            {
+                title: "👑 Access the Hidden Digit",
+                desc: "Scientists discover an 11th digit between 7 and 8. Subscribe to download.",
+                btn: "Unlock Digit"
+            }
+        ];
+
+        let bottomAdIndex = 0;
+
+        setInterval(() => {
+            bottomAdIndex = (bottomAdIndex + 1) % bottomAds.length;
+            const ad = bottomAds[bottomAdIndex];
+            
+            const adTitle = document.getElementById('adTitle');
+            const adDesc = document.getElementById('adDesc');
+            const adBtn = document.getElementById('adBtn');
+            
+            // Transition effect
+            adTitle.classList.add('opacity-0', '-translate-y-1');
+            adDesc.classList.add('opacity-0', 'translate-y-1');
+            
+            setTimeout(() => {
+                adTitle.innerText = ad.title;
+                adDesc.innerText = ad.desc;
+                adBtn.innerText = ad.btn;
+                
+                adTitle.classList.remove('opacity-0', '-translate-y-1');
+                adDesc.classList.remove('opacity-0', 'translate-y-1');
+            }, 300);
+        }, 8000);
+
+        function triggerAdTroll() {
+            playErrorSound();
+            alert("⚠️ SPONSOR REDIRECT FAILED!\n\nYou must purchase the Ad-Click Premium DLC (৳19) before clicking on third-party advertisements.");
+        }
+    </script>
+
+    <!-- Initialize icons on load -->
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>
